@@ -36,7 +36,7 @@ export function EducationInfo() {
   const { data, loading } = useQuery(QUERY_EDUCATIONS
   );
   
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>Loading..!</p>;
    
   return <div className="education-item-wrapper">{data.educations.map(({ id, name, educationType, educationLength, educationPace, description }) => (
     <Link to={`/education/${id}`} id={id} key={id} className="education-item">
