@@ -22,7 +22,7 @@ class Query(graphene.ObjectType):
     def resolve_educations(self, info):
         return EducationModel.objects.all()
 
-    def resolve_educations_by_id(self, info, id):
+    def resolve_education_by_id(self, info, id):
         return get_object_or_404(EducationModel, pk=id)
 
 class CreateUser(graphene.Mutation):
