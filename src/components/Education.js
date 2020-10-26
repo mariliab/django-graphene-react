@@ -1,7 +1,8 @@
 import React from 'react';
 import {
     Link,
-    useParams
+    useParams,
+    useHistory
   } from "react-router-dom";
 import { useQuery, useMutation } from 'react-apollo';
 import { gql } from 'apollo-boost';
@@ -32,11 +33,19 @@ const QUERY_EDUCATION_BY_ID = gql`
 }
 `;
 
+const MUTATION_DELETE_EDUCATION = gql`
+mutation ($id: Int!) {
+  deleteEducation(id: $id) {
+    id
+  }
+}
+`;
+
 export function EducationInfo() {
   const { data, loading } = useQuery(QUERY_EDUCATIONS
   );
   
-  if (loading) return <p>Loading..!</p>;
+  if (loading) return <p>Loading...</p>;
    
   return <div className="education-item-wrapper">{data.educations.map(({ id, name, educationType, educationLength, educationPace, description }) => (
     <Link to={`/education/${id}`} id={id} key={id} className="education-item">
@@ -57,6 +66,9 @@ export function EducationInfo() {
 
 export function EducationInfoPage() {
     const params = useParams();
+    const [deleteEducation] = useMutation(MUTATION_DELETE_EDUCATION);
+
+    let history = useHistory();
 
     const { loading, error, data } = useQuery(QUERY_EDUCATION_BY_ID, {
         variables: { id: params.educationId },
@@ -70,7 +82,18 @@ export function EducationInfoPage() {
         return "Error!";
       }
 
-    console.log("DATA: " + JSON.stringify(data, null, 2))
+    function handleSubmit(event) {
+      event.preventDefault();
+      console.log("Delete: " + data.educationById.id + typeof data.educationById.id);
+      deleteEducation({
+          variables: {
+              id: +data.educationById.id,
+          },
+          refetchQueries: QUERY_EDUCATIONS
+        })
+      history.push("/");
+    }
+
     return (
         <div className="education-page">
           <h1 className="m-0">{data.educationById.name}</h1>
@@ -78,6 +101,9 @@ export function EducationInfoPage() {
           <p className="description">
             {data.educationById.description}
           </p>
+          <form onSubmit={handleSubmit}>
+            <button type="submit">delete</button>
+          </form>
         </div>
     )
 }

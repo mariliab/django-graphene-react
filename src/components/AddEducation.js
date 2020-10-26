@@ -22,6 +22,10 @@ export function AddEducation() {
     const [ educationType, setEducationType ] = React.useState();
     const [ educationDescription, setEducationDescription ] = React.useState();
 
+    const [ errorMessages, setErrorMessages ] = React.useState(false);
+
+    const isSubmittable = Boolean(educationName && educationLength && educationLength && educationType && educationDescription);
+
     const [addEducation] = useMutation(MUTATION_ADD_EDUCATION);
 
     let history = useHistory();
@@ -46,17 +50,22 @@ export function AddEducation() {
 
     function handleSubmit(event) {
         event.preventDefault();
-        addEducation({
-            variables: {
-                name: educationName,
-                educationPace: educationPace,
-                educationLength: educationLength,
-                educationType: educationType,
-                description: educationDescription
-            },
-            refetchQueries: QUERY_EDUCATIONS
-          })
-        history.push("/");
+        if (!isSubmittable && errorMessages === false) {
+            setErrorMessages(true);
+            console.log("Fyll i allt!!")
+        } else {
+            addEducation({
+                variables: {
+                    name: educationName,
+                    educationPace: educationPace,
+                    educationLength: educationLength,
+                    educationType: educationType,
+                    description: educationDescription
+                },
+                refetchQueries: QUERY_EDUCATIONS
+              })
+            history.push("/");
+        }
     }
 
 return <div className="container-small">
