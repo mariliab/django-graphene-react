@@ -33,13 +33,7 @@ const QUERY_EDUCATION_BY_ID = gql`
 `;
 
 export function EducationInfo() {
-  // Polling: provides near-real-time synchronization with
-  // your server by causing a query to execute periodically
-  // at a specified interval
   const { data, loading } = useQuery(QUERY_EDUCATIONS
-    // QUERY_EDUCATIONS, {
-    //   pollInterval: 1000 // refetch the result every 1 second
-    // }
   );
   
   if (loading) return <p>Loading...</p>;
