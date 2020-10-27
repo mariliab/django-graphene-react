@@ -72,6 +72,39 @@ class CreateEducation(graphene.Mutation):
             description=education.description
         )
 
+class UpdateEducation(graphene.Mutation):
+    id = graphene.Int()
+    name = graphene.String()
+    education_type = graphene.String()
+    education_length = graphene.String()
+    education_pace = graphene.String()
+    description = graphene.String()
+
+    class Arguments:
+        id = graphene.Int()
+        name = graphene.String()
+        education_type = graphene.String()
+        education_length = graphene.String()
+        education_pace = graphene.String()
+        description = graphene.String()
+
+    def mutate(self, info, id, name, education_type, education_length, education_pace, description):
+        education = get_object_or_404(EducationModel, pk=id)
+        education.name=name
+        education.education_type=education_type
+        education.education_length=education_length
+        education.education_pace=education_pace
+        education.description=description
+        education.save()
+
+        return UpdateEducation(
+            name=education.name, 
+            education_type=education.education_type, 
+            education_length=education.education_length, 
+            education_pace=education.education_pace, 
+            description=education.description
+        )
+
 class DeleteEducation(graphene.Mutation):
     id = graphene.Int()
 
@@ -87,6 +120,7 @@ class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     create_education = CreateEducation.Field()
     delete_education = DeleteEducation.Field()
+    update_education = UpdateEducation.Field()
     
 schema = graphene.Schema(
     query=Query,
